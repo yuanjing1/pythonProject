@@ -1,0 +1,23 @@
+name: SCP Upload
+
+on:
+  push:
+    branches:
+      - main  # or your deployment branch
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Copy files via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SCP_HOST }}
+          username: ${{ secrets.SCP_USERNAME }}
+          port: ${{ secrets.SCP_PORT || '22' }}
+          key: ${{ secrets.SCP_KEY }}
+          source: "./Finance/*"   # or the files/folders to upload
+          target: ${{ secrets.SCP_DEST }}
