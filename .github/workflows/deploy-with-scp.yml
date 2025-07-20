@@ -3,7 +3,7 @@ name: SCP Upload
 on:
   push:
     branches:
-      - main  # or your deployment branch
+      - master  # or your deployment branch
 
 jobs:
   upload:
@@ -15,9 +15,9 @@ jobs:
       - name: Copy files via SCP
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.SCP_HOST }}
-          username: ${{ secrets.SCP_USERNAME }}
+          host: "www.drsmagic.com"
+          username: "guizhong"
           port: ${{ secrets.SCP_PORT || '22' }}
           key: ${{ secrets.SCP_KEY }}
-          source: "./Finance/*"   # or the files/folders to upload
-          target: ${{ secrets.SCP_DEST }}
+          source: "./*"   
+          target: "/home/guizhong/tmp"
