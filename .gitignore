@@ -1,0 +1,10 @@
+pythoncode-tutorials-master/
+codespaces-jupyter-project/
+data/
+.idea/
+.vs/
+.ipynb_checkpoints/
+chainlink/
+test/
+Finance/__pycache__/
+gemini/
