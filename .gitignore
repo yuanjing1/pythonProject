@@ -7,4 +7,11 @@ data/
 chainlink/
 test/
 Finance/__pycache__/
+__pycache__
 gemini/
+cache.json
+tesla_alert.log
+tesla/tesla_config.py
+iphone/iphone_config.py
+iphone/icloud_session/
+iphone/iphone_location.csv
