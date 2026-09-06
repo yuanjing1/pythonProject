@@ -110,6 +110,8 @@ def notify(title: str, message: str, link: str = "") -> None:
         f"$t.GetElementsByTagName('text').Item(0).InnerText = '{title}';"
         f"$t.GetElementsByTagName('text').Item(1).InnerText = '{message}';"
         "$n = [Windows.UI.Notifications.ToastNotification]::new($t);"
+        "$n.Tag = 'tesla-alert'; $n.Group = 'tesla-alert';"          # same tag -> new toast replaces old one
+        "$n.ExpirationTime = [DateTimeOffset]::Now.AddMinutes(30);"  # auto-clear from notification center
         "[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('Tesla Alert').Show($n)"
     )
     try:
@@ -150,7 +152,7 @@ def is_driving(vehicle) -> tuple[bool, str, str]:
     lat = drive.get("latitude") or drive.get("native_latitude")
     lon = drive.get("longitude") or drive.get("native_longitude")
     driving = shift in DRIVING_STATES or speed > 0
-    detail = f"gear={shift or 'P'} speed={speed} mph"
+    detail = f"{shift or 'P'}" # gear=
     maps_link = ""
     if lat is not None and lon is not None:
         # Address lookup happens only when an alert fires (see describe_place),
@@ -169,7 +171,7 @@ def describe_place(detail: str, maps_link: str) -> str:
     except ValueError:
         return detail
     address = get_address(lat, lon)
-    return detail.split(" @ ")[0] + f" @ {address}" if address else detail
+    return detail.split(" @ ")[0] + f" {address}" if address else detail
 
 
 def main() -> None:
@@ -216,10 +218,10 @@ def main() -> None:
                     last_seen[vid] = (detail, maps_link)
                     if driving and not alerted.get(vid):
                         alerted[vid] = True
-                        notify(f"{name} started driving!", detail, maps_link)
+                        notify(f"{name} ", detail, maps_link)
                     elif not driving:
                         if alerted.get(vid):
-                            notify(f"{name} parked", detail, maps_link)
+                            notify(f"{name} ", detail, maps_link)
                         alerted[vid] = False
                 time.sleep(POLL_ONLINE if any_online else POLL_SLEEPING)
             except KeyboardInterrupt:

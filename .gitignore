@@ -12,6 +12,8 @@ gemini/
 cache.json
 tesla_alert.log
 tesla/tesla_config.py
+tesla/fleet/private-key.pem
+tesla/fleet/fleet_config.py
 iphone/iphone_config.py
 iphone/icloud_session/
 iphone/iphone_location.csv
