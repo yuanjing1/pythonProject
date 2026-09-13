@@ -20,6 +20,7 @@ from pathlib import Path
 FOLDER = Path(r"D:\EDI\working\Availity\ReceiveFiles")
 
 FILE_NAME_RE = re.compile(r"^File Name:\s+(\S+)")
+REJECT_RE = re.compile(r"Message Type:\s*R\b")
 
 
 def base_name(reported: str) -> str:
@@ -41,6 +42,21 @@ def split_sections(text: str):
         # content runs until (and including) the next File Name's preceding lines
         section = "".join(lines[first:end - 1] if n + 1 < len(starts) else lines[first:])
         yield name, section
+
+
+def mark_rejects(out_dir: Path) -> None:
+    """Rename combined files containing a 'Message Type:  R' line to <name>_err.txt.
+
+    Files that no longer contain a reject are renamed back, so re-running
+    keeps the suffix in sync with the current content.
+    """
+    for f in sorted(out_dir.glob("*.txt")):
+        rejected = bool(REJECT_RE.search(f.read_text(encoding="latin-1")))
+        stem = f.stem[:-4] if f.stem.endswith("_err") else f.stem
+        target = out_dir / (f"{stem}_err.txt" if rejected else f"{stem}.txt")
+        if target != f:
+            f.replace(target)
+            print(f"renamed: {f.name} -> {target.name}")
 
 
 def main() -> None:
@@ -69,6 +85,8 @@ def main() -> None:
                 if not section.endswith("\n"):
                     fh.write("\n")
         print(f"{out.name}: {len(parts)} section(s) <- {', '.join(src for src, _ in parts)}")
+
+    mark_rejects(out_dir)
 
 
 if __name__ == "__main__":

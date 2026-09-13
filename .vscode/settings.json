@@ -1,0 +1,6 @@
+{
+    // notebook cell output: show long tables in full instead of "Output is truncated"
+    "notebook.output.textLineLimit": 2000,
+    "notebook.output.scrolling": true,
+    "notebook.output.wordWrap": false
+}
